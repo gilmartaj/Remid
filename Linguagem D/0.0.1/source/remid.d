@@ -11,7 +11,7 @@ void main(string[] args)
         DerelictSDL2.load(); 
         // Carrega a biblioteca SDL2 Mixer
         DerelictSDL2Mixer.load();
-	    // Inicializa a biblioteca SDL configurada para áudioinicializa a biblioteca SDL configurada para áudio
+	// Inicializa a biblioteca SDL configurada para áudioinicializa a biblioteca SDL configurada para áudio
         SDL_Init(SDL_INIT_AUDIO); 
         // Inicializa a API de mixer de áudio
         Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
