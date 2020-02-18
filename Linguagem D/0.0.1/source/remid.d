@@ -32,7 +32,7 @@ void main(string[] args)
 	}
 	catch (Exception e)
 	{
-		// Caso ocorra algum erro, mostra uma mensagem para o usuário
-		writeln("Erro ao executar.");
+	    // Caso ocorra algum erro, mostra uma mensagem para o usuário
+	    writeln("Erro ao executar.");
 	}
 }
