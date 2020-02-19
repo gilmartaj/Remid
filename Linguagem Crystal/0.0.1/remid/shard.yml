@@ -1,0 +1,13 @@
+name: remid
+version: 0.1.0
+
+authors:
+  - your-name-here <your-email-here>
+
+targets:
+  remid:
+    main: src/remid.cr
+
+crystal: 0.33.0
+
+license: MIT
