@@ -1,4 +1,4 @@
-require "../dep/sdl.cr-master/src/**"
+require "../lib/sdl.cr-master/src/**"
 require "option_parser"
 
 OptionParser.parse do |parser|
