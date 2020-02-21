@@ -1,2 +1,2 @@
 # Remid
-Reprodutores de mídia educativos em diversas linguagens
+Reprodutores de mídia em diversas linguagens.
