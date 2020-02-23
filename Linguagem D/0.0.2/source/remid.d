@@ -4,7 +4,7 @@ import derelict.sdl2.mixer; // importa a ligação da biblioteca SDL2 Mixer
 import std.array : split; //separar as strings
 import std.file : exists;
 import std.stdio : readln, write, writeln; // importa a função de escrita na tela com quebra de linha depois do que é escrito
-import std.string: strip, toStringz;
+import std.string: strip, toStringz; //strip limpa os espaços em volta do texto, toStringz converte string e string C
 
 // Método principal que executa o programa
 void main(string[] args)
@@ -50,8 +50,7 @@ void main(string[] args)
                         if(!audioCarregado)
                         writeln("Erro ao carregar arquivo.");
                     }
-                    comecou = false;
-                    tocando = false;
+                    tocando = comecou = false;
                     break;
                 case "reproduzir", "r":
                     if(audioCarregado)
@@ -77,8 +76,7 @@ void main(string[] args)
                     tocando = false;
                     break;
                 case "terminar", "t":
-                    comecou = false;
-                    tocando = false;
+                    tocando = comecou = false;
                     pararAudio();
                     break;
                 case "sair", "s":
