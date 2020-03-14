@@ -18,5 +18,5 @@ int main(int argc, char** argv)
 		exit(1);
 	}
 	while(Mix_PlayingMusic());
-	cout << "O áudio terminou de tocar\n";
+	cout << "O áudio terminou de tocar" << endl;
 }
