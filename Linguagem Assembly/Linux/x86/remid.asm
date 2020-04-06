@@ -1,26 +1,31 @@
-; Define printf as an external function
-EXTERN SDL_Init
-EXTERN Mix_OpenAudio
+EXTERN Mix_CloseAudio
 EXTERN Mix_LoadMUS
+EXTERN Mix_OpenAudio
 EXTERN Mix_PlayMusic
 EXTERN Mix_PlayingMusic
+EXTERN SDL_Init
 
 SDL_INIT_AUDIO equ 0x00000010
 AUDIO_S16LSB equ 0x8010
 
 SECTION .DATA
-    mensagemLeitura: db "Informe o caminho do áudio: ", 0
-    comprimentoLeitura: equ $-mensagemLeitura
-    mensagemSaida:	db "O áudio terminou de tocar.\n", 0
-    comprimentoSaida: equ $-mensagemSaida
+    mensagemFimAudio:	db "O áudio terminou de tocar.", 10, 0
+    comprimentoMsgFimAudio: equ $-mensagemFimAudio
+    mensagemErro: db "Erro ao reproduzir.", 10, 0
+    comprimentoMsgErro: equ $-mensagemErro
     
 SECTION .bss
-caminhoAudio: resb 256
+enderecoCaminhoAudio: resd 1
 
 SECTION .TEXT
     global main
     
 main:
+	mov eax, [esp+8]
+	add eax, 4
+	mov esi, [eax]
+	mov [enderecoCaminhoAudio], esi
+	
     push dword SDL_INIT_AUDIO
     call SDL_Init
     add esp, 4
@@ -31,35 +36,8 @@ main:
     call Mix_OpenAudio
     add esp, 16
     
-    mov eax, 0x04
-    mov ebx, 1
-    mov ecx, mensagemLeitura
-    mov edx, comprimentoLeitura
-    int 0x80
-    
-    mov     edx, 255
-    mov     ecx, caminhoAudio     
-    mov     ebx, 0          
-    mov     eax, 3           
-    int     0x80  
-    
-    mov ecx, 256
-    mov edi, caminhoAudio
-    mov eax, 13
-    repne scasb
-    mov byte [edi-1], 0
-    
-    or ecx, ecx
-    jnz tocar
-    
-    mov ecx, 256
-    mov edi, caminhoAudio
-    mov eax, 10
-    repne scasb
-    mov byte [edi-1], 0
-    
-    tocar:
-    push dword caminhoAudio
+tocar:
+    push dword [enderecoCaminhoAudio]
     call Mix_LoadMUS
     add esp, 4
     push dword 1
@@ -67,16 +45,31 @@ main:
     call Mix_PlayMusic
     add esp, 8
     
-    continuar:
+    cmp eax, 0
+    je continuar_tocando
+    
+erro:
+    mov eax, 0x04
+    mov ebx, 1
+    mov ecx, mensagemErro
+    mov edx, comprimentoMsgErro
+    int 0x80
+    jmp fim_do_programa
+    
+continuar_tocando:
     call Mix_PlayingMusic
-    and eax, 1
-    jnz continuar
+    cmp eax, 1
+    je continuar_tocando
     
     mov eax, 0x04
     mov ebx, 1
-    mov ecx, mensagemSaida
-    mov edx, comprimentoSaida
+    mov ecx, mensagemFimAudio
+    mov edx, comprimentoMsgFimAudio
     int 0x80
-
-    mov	eax,0	; Exit code 0
-    ret			; Return
+	
+fim_do_programa:
+	call Mix_CloseAudio
+    mov	eax, 1
+    mov ebx, 0
+    int 0x80
+    ret
