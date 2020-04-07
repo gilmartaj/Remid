@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"../../github.com/hajimehoshi/oto"
-	"../../github.com/hajimehoshi/go-mp3"
+	"github.com/hajimehoshi/oto"
+	"github.com/hajimehoshi/go-mp3"
 )
 
 func main() {
