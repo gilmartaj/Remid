@@ -19,7 +19,8 @@ void main(string[] args)
     
     if(inicializar() == erro) // verifica se as bibliotecas foram iniciadas com sucesso
     {
-        exit(1); // função de encerra o programa, retrnando código de erro 1
+	writeln("Erro ao executar.");
+        exit(1); // função de encerra o programa, retornando código de erro 1
     }
     
     mostrarAjuda(); // mostra os comandos disponíveis
