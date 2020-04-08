@@ -1,12 +1,9 @@
-EXTERN Mix_CloseAudio
 EXTERN Mix_LoadMUS
 EXTERN Mix_OpenAudio
 EXTERN Mix_PlayMusic
 EXTERN Mix_PlayingMusic
 EXTERN SDL_Init
 EXTERN SDL_Quit
-extern printf
-extern puts
 
 SDL_INIT_AUDIO equ 0x00000010
 AUDIO_S16LSB equ 0x8010
@@ -16,8 +13,6 @@ SECTION .DATA
     comprimentoMsgFimAudio: equ $-mensagemFimAudio
     mensagemErro: db "Erro ao reproduzir.", 10, 0
     comprimentoMsgErro: equ $-mensagemErro
-    msg: db "%d",10,0
-    s: db "%s",10,0
     
 SECTION .bss
 enderecoCaminhoAudio: resq 1
@@ -27,36 +22,21 @@ SECTION .TEXT
     
 main:    
 
-	mov rax, rsi
-	add rax, 8
-	mov rsi, [rax]
-	mov [enderecoCaminhoAudio], rsi
+    mov rax, rsi
+    add rax, 8
+    mov rsi, [rax]
+    mov [enderecoCaminhoAudio], rsi
 	
     push SDL_INIT_AUDIO
     call SDL_Init
     
-    mov rdi, msg
-    mov rsi, rax
-    call printf
-    
-    push 1024
-    push 2
-    push AUDIO_S16LSB
-    push 44100    
     mov rdi, 44100
     mov rsi, AUDIO_S16LSB
     mov rdx, 2
     mov rcx, 1024
     call Mix_OpenAudio
     
-    mov rdi, msg
-    mov rsi, rax
-    call printf
-    
-tocar: 
-    mov rdi, s
-    mov rsi, [enderecoCaminhoAudio]
-    call printf
+tocar:
     
     mov rdi, [enderecoCaminhoAudio]
     call Mix_LoadMUS
@@ -88,7 +68,7 @@ continuar_tocando:
     syscall
 	
 fim_do_programa:
-	call SDL_Quit
+    call SDL_Quit
     mov	rax, 60
     mov rdi, 0
     syscall
