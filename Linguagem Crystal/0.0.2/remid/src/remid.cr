@@ -21,8 +21,8 @@ def esta_parado
 end
 
 def esta_pausado
-    # verifica se o áudio está pausado (a função da biblioteca retorna 1 ou 0, então é feita a conversão para bool)
-    LibMix.music_paused == 0 ? false : true
+  # verifica se o áudio está pausado (a função da biblioteca retorna 1 ou 0, então é feita a conversão para bool)
+  LibMix.music_paused == 0 ? false : true
 end
 
 def esta_tocando
