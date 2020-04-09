@@ -2,6 +2,8 @@ require "../lib/sdl.cr-master/src/**"
 require "option_parser"
 
 ERRO = -1
+audio_carregado : Pointer(LibMix::Music) | Nil = nil
+caminho_arquivo : String | Nil = nil
 
 def carregar_audio(caminho_arquivo)
   # carrega áudio a partir do caminho informado
@@ -15,7 +17,7 @@ end
 
 def esta_parado
   # verifica se o áudio está parado (ele está parado se não está tocando e nem pausado)
-  return !estaTocando && !estaPausado
+  return !esta_tocando && !esta_pausado
 end
 
 def esta_pausado
@@ -46,25 +48,78 @@ def mostrar_ajuda
   puts texto_ajuda
 end
 
-def pararAudio
+def parar_audio
   LibMix.halt_music # para o áudio (caso tenha sido iniciado)
 end
 
-def pausarAudio
+def pausar_audio
   LibMix.pause_music # pausa o áudio (caso esteja tocando)  
 end
 
-def reproduzirAudio(audio : Pointer(LibMix::Music))
+def reproduzir_audio(audio : Pointer(LibMix::Music))
     LibMix.play_music audio, 1 # reproduz o áudio passado como argumento 1 vez (-1 repetiria "infinitamente")
 end
 
+if inicializar() == ERRO
+  puts "Erro ao executar."
+  exit 1
+end
+
+mostrar_ajuda
+
 loop do
-  if inicializar() == ERRO
-    puts "Erro ao executar."
-    exit 1
+  print "comando: "
+  comando = read_line
+  
+  opcoes = comando.split
+  
+  if opcoes.size > 0
+    case opcoes[0]
+      when "ajuda", "a"
+        mostrar_ajuda
+      when "carregar", "c"
+        if opcoes.size > 1
+          parar_audio if esta_tocando
+          auxiliar = comando.strip
+          caminho_arquivo = auxiliar[opcoes[0].size...auxiliar.size].strip
+          if !File.exists? caminho_arquivo
+            audio_carregado = nil
+            puts "Arquivo não encontrado."
+          else
+            audio_carregado = carregar_audio caminho_arquivo
+            puts "Erro ao carregar arquivo." if !audio_carregado
+          end
+        else
+          puts "Caminho do áudio não informado."
+        end
+      when "reproduzir", "r"
+        if audio_carregado
+          if esta_parado
+            audio_carregado = carregar_audio caminho_arquivo
+            reproduzir_audio audio_carregado
+          elsif esta_pausado
+            continuar_audio
+          else 
+            puts "O áudio já está tocando."
+          end
+        else
+          puts "Não há áudio carregado."
+        end
+      when "pausar", "p"
+        if esta_tocando pausar_audio 
+        else puts "O áudio não está tocando." 
+        end
+      when "terminar", "t"
+        if !esta_parado parar_audio
+        else puts "O áudio já está parado." 
+        end
+      when "sair", "s"
+      exit 0
+      else
+        puts "Comando inválido."
+    end
+  
   end
-  x = gets
-  break if x == "a"
 end
 
 
