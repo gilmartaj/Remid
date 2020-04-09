@@ -7,7 +7,7 @@ caminho_arquivo : String | Nil = nil
 
 def carregar_audio(caminho_arquivo)
   # carrega áudio a partir do caminho informado
-  return LibMix.load_mus caminho_arquivo
+  return LibMix.load_mus caminho_arquivo if caminho_arquivo
 end
 
 def continuar_audio
@@ -56,8 +56,8 @@ def pausar_audio
   LibMix.pause_music # pausa o áudio (caso esteja tocando)  
 end
 
-def reproduzir_audio(audio : Pointer(LibMix::Music))
-    LibMix.play_music audio, 1 # reproduz o áudio passado como argumento 1 vez (-1 repetiria "infinitamente")
+def reproduzir_audio(audio)
+    LibMix.play_music audio, 1 if audio# reproduz o áudio passado como argumento 1 vez (-1 repetiria "infinitamente")
 end
 
 if inicializar() == ERRO
@@ -106,12 +106,16 @@ loop do
           puts "Não há áudio carregado."
         end
       when "pausar", "p"
-        if esta_tocando pausar_audio 
-        else puts "O áudio não está tocando." 
+        if esta_tocando
+          pausar_audio 
+        else
+          puts "O áudio não está tocando." 
         end
       when "terminar", "t"
-        if !esta_parado parar_audio
-        else puts "O áudio já está parado." 
+        if !esta_parado
+          parar_audio
+        else puts
+          "O áudio já está parado." 
         end
       when "sair", "s"
       exit 0
