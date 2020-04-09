@@ -3,9 +3,9 @@ require "option_parser"
 
 ERRO = -1
 audio_carregado : Pointer(LibMix::Music) | Nil = nil
-caminho_arquivo : String | Nil = nil
+caminho_arquivo : String = ""
 
-def carregar_audio(caminho_arquivo)
+def carregar_audio(caminho_arquivo : String)
   # carrega áudio a partir do caminho informado
   return LibMix.load_mus caminho_arquivo if caminho_arquivo
 end
@@ -56,7 +56,7 @@ def pausar_audio
   LibMix.pause_music # pausa o áudio (caso esteja tocando)  
 end
 
-def reproduzir_audio(audio)
+def reproduzir_audio(audio : Pointer(LibMix::Music))
     LibMix.play_music audio, 1 if audio# reproduz o áudio passado como argumento 1 vez (-1 repetiria "infinitamente")
 end
 
@@ -96,7 +96,11 @@ loop do
         if audio_carregado
           if esta_parado
             audio_carregado = carregar_audio caminho_arquivo
-            reproduzir_audio audio_carregado
+            if audio_carregado #carrega o áudio de novo para corrigir um pequeno bug que acontece quando o áudio é reiniciado sem ser recarregado
+              reproduzir_audio audio_carregado
+            else
+              puts "Erro ao reproduzir."
+            end
           elsif esta_pausado
             continuar_audio
           else 
@@ -122,8 +126,5 @@ loop do
       else
         puts "Comando inválido."
     end
-  
   end
 end
-
-
